@@ -40,8 +40,6 @@
           <select class='form-control' id='status' name='status' required> 
             <option value="1" >Activo</option>
             <option value="0" >Inactivo</option>
-            <option value="2" >Pasado</option>
-            <option value="3" >Cancelado</option>
           </select> 
           <label for="status">Estado</label>
         </div>
@@ -98,13 +96,31 @@ window.addEventListener('DOMContentLoaded', () => {
   let userId = "<?php echo $_SESSION['userId'] ?>"
   let token = "<?php echo $_SESSION['accessToken'] ?>"
 
-  $.ajaxSetup({ headers: { 'Authorization': 'Bearer '+token } });
+  // equivalencia de headers ( que envia el cliente ) usando Axios  usando .ajaxSetup
+  // let custom_headers = {
+  //   "Accept":         "application/json, text/javascript, */*; q=0.01",
+  //   "Content-Type":   "application/json; charset=UTF-8" || "application/x-www-form-urlencoded; charset=UTF-8",
+  //   "Authorization":  "Bearer "+token
+  // };
+
+// si content-type = json ( payload: Request Payload )
+// si content-type = form-urlencoded  ( payload: Form Data )
+
+
+  let custom_headers = {
+    "Accept":         "application/json, text/javascript, */*; q=0.01", // dataType
+    "Content-Type":   "application/json; charset=UTF-8", // contentType
+    "Authorization":  "Bearer "+token
+  };
+  
+
+  $.ajaxSetup({ headers: custom_headers });
+
 
 
   $.ajax({
     url: 'https://culturalcompass.online/api/organizers',
     type: 'GET',
-    dataType: 'json',
     data: {},
     error: error => {
       console.log(error.responseText)
@@ -127,7 +143,6 @@ window.addEventListener('DOMContentLoaded', () => {
   $.ajax({
     url: 'https://culturalcompass.online/api/locations',
     type: 'GET',
-    dataType: 'json',
     data: {},
     error: error => {
       console.log(error.responseText)
@@ -150,7 +165,6 @@ window.addEventListener('DOMContentLoaded', () => {
   $.ajax({
     url: 'https://culturalcompass.online/api/categories',
     type: 'GET',
-    dataType: 'json',
     data: {},
     error: error => {
       console.log(error.responseText)
@@ -171,6 +185,26 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 
 
+  let imageUrl = '';
+  
+  let input_image = document.querySelector('#imagen')
+  input_image.addEventListener('change', (e) => {
+    console.log(e.target.files[0])
+    let reader = new FileReader();
+
+    reader.onload = function () {
+      console.log(reader.result);
+      imageUrl = reader.result;
+    };
+    reader.onerror = function (error) {
+     console.log('Error: ', error);
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
+
+  })
+
+
 
   let form = document.querySelector('#formularioEvento');
   let btn = form.querySelector('button');
@@ -179,41 +213,43 @@ window.addEventListener('DOMContentLoaded', () => {
 
     e.preventDefault();
 
+
     let formData = {
       "name" : document.querySelector('#name').value,
       "startAt" : document.querySelector('#startAt').value,
       "endAt" : document.querySelector('#endAt').value,
       "description" : document.querySelector('#description').value,
-      "status" : document.querySelector('#status').value,
+      "status" : Number(document.querySelector('#status').value),
       "url" : document.querySelector('#url').value,
       "categoryId" : Number(document.querySelector('#categoryId').value),
       "locationId" : Number(document.querySelector('#locationId').value),
-      "organizerId" : Number(document.querySelector('#organizerId').value)
+      "organizerId" : Number(document.querySelector('#organizerId').value),
+      "imageUrl" : imageUrl
     }
 
     // cesar1  1112222
     // cesar2  222222
     // cesar3  222222
 
-    let dat = JSON.stringify(formData)
+    // let formData_string = JSON.stringify(formData)
 
-    console.log(formData)
-    console.log( 'Category Id type = ' + typeof formData.categoryId)
-    console.log( 'Location Id type = ' + typeof formData.locationId)
-    console.log( 'Organizador Id type = ' + typeof formData.organizerId)
+    // console.log(formData)
+    // console.log( 'Category Id type = ' + typeof formData.categoryId)
+    // console.log( 'Location Id type = ' + typeof formData.locationId)
+    // console.log( 'Organizador Id type = ' + typeof formData.organizerId)
 
-    console.log( 'formData type = ' + typeof formData)
+    console.log( 'imageUrl Data type = ' + typeof imageUrl)
 
-    console.log( 'JSON.stringify(formData) type = ' + typeof dat)
-    console.log( 'Jquery version = 3.7.1')
-
-
+    // console.log( 'JSON.stringify(formData) type = ' + typeof formData_string)
+    // console.log( 'Jquery version = 3.7.1')
 
     $.ajax({
-      url: 'https://culturalcompass.online/api/events',
-      type: 'POST',
-      dataType: 'json',
-      data: dat,
+      url:  "https://culturalcompass.online/api/events",
+      type: "POST",
+      data: JSON.stringify(formData), // si no se usa FormData() se debe usar JSON.stringify
+      // data: formData,   // al usar FormData() no se usa JSON.stringify
+      // contentType:  false, // al usar FormData() no se envia content
+      // processData:  false, // al usar FormData() no se procesa la data
       error: error => {
         console.log(error.responseText)
       },

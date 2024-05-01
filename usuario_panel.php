@@ -39,7 +39,7 @@
   
   </div>
 
-  <div class="col col-md-10 py-4 mx-auto " >
+  <div class="col col-md-7 py-4 mx-auto " >
     <div id="calendar" class="p-2 bg-white rounded-3 border"></div>
   </div>
 
@@ -52,13 +52,24 @@
 <script>
 window.addEventListener('DOMContentLoaded', () => {
 
+  let userId = "<?php echo $_SESSION['userId'] ?>"
+  let token = "<?php echo $_SESSION['accessToken'] ?>"
+
+  let custom_headers = {
+    "Accept":         "application/json, text/javascript, */*; q=0.01", // dataType
+    "Content-Type":   "application/json; charset=UTF-8", // contentType
+    "Authorization":  "Bearer "+token
+  };
+  
+  $.ajaxSetup({ headers: custom_headers });
+
+
   let mis_eventos = [];
 
   // traer los eventos a los que esta apuntado el usuario
   $.ajax({
     url: 'https://culturalcompass.online/api/events',
     type: 'GET',
-    dataType: 'json',
     data: {},
     error: error => {
       console.log(error.responseText)
@@ -112,7 +123,6 @@ window.addEventListener('DOMContentLoaded', () => {
   $.ajax({
     url: 'https://culturalcompass.online/api/events',
     type: 'GET',
-    dataType: 'json',
     data: {},
     error: error => {
       console.log(error.responseText)
@@ -157,6 +167,49 @@ window.addEventListener('DOMContentLoaded', () => {
 
     }
   })
+
+
+
+
+  $.ajax({
+    url: 'https://culturalcompass.online/api/me/saved-events',
+    type: 'GET',
+    data : {},
+    error: error => {
+      console.log(error.responseText)
+    },
+    success: function(response){
+      console.log(response)
+
+      let data = response;
+      let eventos = [];
+      for(let i = 0; i < data.length; i++){
+        eventos.push({
+          title: data[i].title,
+          start: data[i].start,
+          end: data[i].end,
+          color:'#000333'
+        });
+      }
+     
+      const calendarEl = document.getElementById("calendar");
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        // initialView: 'timeGridWeek',
+        firstDay: 1,
+        headerToolbar: {
+          left: 'prev,next',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: eventos,
+      });
+      calendar.setOption('locale', 'es');
+      calendar.render();
+
+    }
+  })
+
 
 
 })

@@ -75,13 +75,13 @@
             // console.log(response)
             switch (roleId) {
               case 1:
-                window.location.href = 'panelUsuario.php';
+                window.location.href = 'usuario_panel.php';
                 break;
               case 2:
                 window.location.href = 'panelOrg.php';
                 break;
               case 3:
-                window.location.href = 'panelAdmin.php';
+                window.location.href = 'admin_panel.php';
                 break;
             }
 

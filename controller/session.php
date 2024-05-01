@@ -7,9 +7,13 @@
   // define('URL_ROOT', 'http://192.168.8.100/yassir/front2');
   define('WEB_NAME', 'Cultural Compass');
   
-  session_cache_limiter('private, must-revalidate');
-  session_cache_expire(60);
-  session_start();
+  if (session_status() == PHP_SESSION_NONE) {
+    session_cache_limiter('private, must-revalidate');
+    session_cache_expire(60);
+    session_start();
+  }
+
+
 
   function createdAlert() {
       if (isset($_SESSION['alerta'])) {
@@ -31,13 +35,13 @@
 
     switch ($roleId) {
       case 1:
-        echo "panelUsuario.php";
+        echo "usuario_panel.php";
         break;
       case 2:
         echo "panelOrg.php";
         break;
       case 3:
-        echo "panelAdmin.php";
+        echo "admin_panel.php";
         break;
 
       default:

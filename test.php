@@ -12,6 +12,13 @@
 <body>
 	<h1>TEsting </h1>
 
+        <div class="form-floating mb-3 " >
+          <input type="file" accept=".jpg,.jpeg,.png" id="imagen" name="imagen" class="form-control w-100">
+          <label for="imagen">Imagen</label>
+        </div>
+
+        <img src="" id="base64Img" width="500">
+
 	<script>
 		
 
@@ -20,31 +27,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-  let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsInVzZXJuYW1lIjoiY2VzYXIyIiwicm9sZSI6MSwiaWF0IjoxNzE0Mzc5MTk3LCJleHAiOjE3MTQ2MzgzOTd9.XDczncmx_TVd1FElC69bYz_6_xHlqJ1uoJvGG0ibUto';
+  let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjMsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjozLCJpYXQiOjE3MTQ1NTEwODksImV4cCI6MTcxNDgxMDI4OX0.40SVQqML9YrCrweHtAOcw4w-b3x3q4a_l8wCM5VvwUQ';
 
-  $.ajaxSetup({ headers: { 'Authorization': 'Bearer '+token } });
-
-  $.ajax({
-    url: 'https://culturalcompass.online/api/me/saved-events',
-    type: 'GET',
-		dataType: 'json',
-    data: {},
-    success: function(response){
-      console.log(response)
-     
-    }
-  })
-
-  $.ajax({
-    url: 'https://culturalcompass.online/api/me/user',
-    type: 'GET',
-		dataType: 'json',
-    data: {},
-    success: function(response){
-      console.log(response)
-     
-    }
-  })
+  // $.ajaxSetup({ headers: { 'Authorization': 'Bearer '+token } });
 
   $.ajax({
     url: 'https://culturalcompass.online/api/events',
@@ -57,36 +42,104 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  $.ajax({
-    url: 'https://culturalcompass.online/api/categories',
-    type: 'GET',
-		dataType: 'json',
-    data: {},
-    success: function(response){
-      console.log(response)
-     
+
+// function getBase64(file) {
+//    var reader = new FileReader();
+//    reader.readAsDataURL(file);
+//    reader.onload = function () {
+//      console.log(reader.result);
+//    };
+//    reader.onerror = function (error) {
+//      console.log('Error: ', error);
+//    };
+// }
+
+// var file = document.querySelector('input[type="file"]').files[0];
+// getBase64(file); // prints the base64 string
+
+   function encodeImgtoBase64(element) {
+    var file = element.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      $("#base64Code").val(reader.result);
+      $("#convertImg").text(reader.result);
+      $("#base64Img").attr("src", reader.result);
     }
-  })
-
-
-  let datos = {
-	  "vin": "1FMDU34X8RUC54412"
+    reader.readAsDataURL(file);
   }
 
+    let imageUrl = '';
+    
+    let input_image = document.querySelector('#imagen')
+    input_image.addEventListener('change', (e) => {
 
-  $.ajax({
-    url: 'https://culturalcompass.online/api/me/saved-events',
-    type: 'POST',
-    dataType: 'json',
-    data: datos,
-    error: function(err){
-      console.log(err.responseText)
-    },
-    success: function(response){
-      console.log(response)
+      let reader = new FileReader();
+
+      reader.onload = function () {
+       console.log(reader.result);
+        imageUrl = reader.result;
+        console.log(typeof imageUrl)
+        $("#base64Img").attr("src", reader.result);
+      };
+      reader.onerror = function (error) {
+       console.log('Error: ', error);
+      };
+
+      reader.readAsDataURL(e.target.files[0]);
+
+    })
+
+
+
+  // $.ajax({
+  //   url: 'https://culturalcompass.online/api/me/user',
+  //   type: 'GET',
+	// 	dataType: 'json',
+  //   data: {},
+  //   success: function(response){
+  //     console.log(response)
      
-    }
-  })
+  //   }
+  // })
+
+  // $.ajax({
+  //   url: 'https://culturalcompass.online/api/events',
+  //   type: 'GET',
+	// 	dataType: 'json',
+  //   data: {},
+  //   success: function(response){
+  //     console.log(response)
+     
+  //   }
+  // })
+
+  // $.ajax({
+  //   url: 'https://culturalcompass.online/api/categories',
+  //   type: 'GET',
+	// 	dataType: 'json',
+  //   data: {},
+  //   success: function(response){
+  //     console.log(response)
+     
+  //   }
+  // })
+
+
+
+
+  // $.ajax({
+  //   url: 'https://culturalcompass.online/api/me/saved-events',
+  //   type: 'POST',
+  //   dataType: 'json',
+  //   data: datos,
+  //   error: function(err){
+  //     console.log(err.responseText)
+  //   },
+  //   success: function(response){
+  //     console.log(response)
+     
+  //   }
+  // })
 
 
 });

@@ -9,13 +9,13 @@
 
           <?php if ( usuarioLoggedIn() ) : ?>
             <li class="nav-item">
-              <a href="PerfilPersonal.php" class="nav-link"  aria-current="page">Gestionar Mi Perfil</a>
+              <a href="perfil.php" class="nav-link"  aria-current="page">Gestionar Mi Perfil</a>
             </li>
             <li class="nav-item">
-              <a href="Contacto.php" class="nav-link"  aria-current="page">Contacto</a>
+              <a href="contacto.php" class="nav-link"  aria-current="page">Contacto</a>
             </li>
             <li class="nav-item">
-              <a href="BuzonMensajes.php" class="nav-link"  aria-current="page">Buzon</a>
+              <a href="buzon.php" class="nav-link"  aria-current="page">Buzon</a>
             </li>
 
             <li class="nav-item">
@@ -55,7 +55,7 @@
 
           <?php elseif ( adminLoggedIn() ) : ?>
             <li class="nav-item">
-              <a href="PerfilPersonal.php" class="nav-link"  aria-current="page">Gestionar Mi Perfil</a>
+              <a href="perfil.php" class="nav-link"  aria-current="page">Gestionar Mi Perfil</a>
             </li>
 
             <li class="nav-item dropdown">
@@ -64,26 +64,26 @@
               </a>
               <ul class="dropdown-menu">
                 <li><a class= "dropdown-item" href="crearEvento.php">Eventos</a></li>
-                <li><a class= "dropdown-item" href="CrearUbicacion.php">Ubicaciones</a></li>
-                <li><a class= "dropdown-item" href="CrearCategoria.php">Categorias</a></li> 
+                <li><a class= "dropdown-item" href="crearUbicacion.php">Ubicaciones</a></li>
+                <li><a class= "dropdown-item" href="categorias.php">Categorias</a></li> 
               </ul>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="PanelAdmin.php" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Administrar
               </a>
               <ul class="dropdown-menu">
                 
-                <li><a class="dropdown-item" href="AdminOrg.php">Organizadores</a></li>
-                <li><a class="dropdown-item" href="AdminUsers.php"> Usuarios</a></li>
+                <li><a class="dropdown-item" href="admin_organizadores.php">Organizadores</a></li>
+                <li><a class="dropdown-item" href="admin_usuarios.php"> Usuarios</a></li>
               </ul>
             </li>
 
             <li class="nav-item">
-              <a href="Contacto.php" class="nav-link"  aria-current="page">Contacto</a>
+              <a href="contacto.php" class="nav-link"  aria-current="page">Contacto</a>
             </li>
             <li class="nav-item">
-              <a href="BuzonMensajes.php" class="nav-link"  aria-current="page">Buzon</a>
+              <a href="buzon.php" class="nav-link"  aria-current="page">Buzon</a>
             </li>
 
             <li class="nav-item">
