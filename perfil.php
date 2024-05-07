@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -55,22 +55,18 @@
         </form>
       </div>
 
-
-
-
     </div>
   </div>
 
-
   <div class="col section__panel" >
-    <div class="p-2 col col-md-10 mx-auto bg-white rounded-3 shadow-sm">
+    <div class="p-3 col col-md-10 mx-auto bg-white rounded-3 shadow-sm">
 
-      <div class="col p-3">
+      <h2 class="text-center">Preferencias e Intereses</h2>
 
-        <h2 class="text-center">Preferencias e Intereses</h2>
+      <div id="lista_preferencias" class="p-3 row row-cols-1 row-cols-md-4"> </div>
+      <div class="p-2 row justify-content-center mt-4 ">
+        <button id="btn_save" class="p-2 col-auto btn btn-primary">Guardar Preferencias</button>
       </div>
-
-      <div id="tabla_usuarios" class="col table-responsive"> </div>
 
     </div>
   </div>
@@ -89,8 +85,6 @@
   </div>
 
 </main>
-
-
 
 
 <div class="modal fade mt-5" id="modal_custom" tabindex="-1">
@@ -128,85 +122,94 @@
 </div>
 
 
-<div class="modal fade mt-5" id="modal_success" tabindex="-1">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-body">
 
-        <div class="row justify-content-end align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
+<?php require_once 'partials/modal_success.php'; ?>
 
-        <div class=" row text-center py-4">
-          <h1 class="text-success py-3">Correcto</h1>
-          <i class="fas fa-check fa-5x text-success"></i>
-        </div>
-
-
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade mt-5" id="modal_delete" tabindex="-1">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-body">
-
-        <div class="row justify-content-between align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-10">
-            <h4 class="m-0"> Eliminar Categoria ? </h4>
-          </div>
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
-
-
-        <!-- <form action="" class="pt-4 col-md-12 needs-validation" novalidate method="POST" > -->
-        <form id="form_delete" action="#" class="pt-4 " method="POST" >
-
-          <div class="form-floating mb-2" >
-            <input type="text" class="form-control bg-light" id="name" name="name" placeholder="Categoria" required autocomplete="off">
-            <label for="name">Categoria</label>
-          </div>
-
-          <button type="submit" class="mt-3 p-3 w-100 btn btn-danger" > </button>
-
-        </form>
-
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-<script src="./assets/js/helper.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {
 
-  let userId = "<?php echo $_SESSION['userId'] ?>"
-  let token = "<?php echo $_SESSION['accessToken'] ?>"
+  load_perfil();
+  load_preferencias();
+  load_categories();
 
-  let custom_headers = {
-    "Accept":         "application/json, text/javascript, */*; q=0.01", // dataType
-    "Content-Type":   "application/json; charset=UTF-8", // contentType
-    "Authorization":  "Bearer "+token
-  };
-  
 
-  $.ajaxSetup({ headers: custom_headers });
+
+}) // end DOMContentLoaded
+
+  let userId = localStorage.getItem('userId');
+  let mis_categorias = [];
+  let total_categorias = [];
+
+  const load_categories = () => {
+    $.ajax({
+      url: 'https://culturalcompass.online/api/categories',
+      type: 'GET',
+      data: {},
+      error: error => {
+        console.log(error.responseText)
+      },
+      success: response => {
+
+        let html = '';
+
+        response.sort(function (a, b) { return a.id - b.id }); 
+        response.forEach( categ => {
+          html += `
+            <label for="category_${categ.id}" class="p-2">
+              <input type="checkbox" id="category_${categ.id}" name="categories" value="${categ.id}" ${mis_categorias.includes(categ.id) ? 'checked' : ''}>
+              ${categ.name}
+            </label>`;
+
+          total_categorias.push(categ.id);
+        })
+
+        document.querySelector('#lista_preferencias').innerHTML = html;
+
+
+        let allCheckboxes = document.querySelectorAll('input[name="categories"]');
+
+        if ( allCheckboxes.length > 0 ) {
+          allCheckboxes.forEach( checkbox => {
+            checkbox.addEventListener('change', (e) => {
+              if ( e.target.checked == true ) {
+                console.log(e.target.value)
+                add_categ(parseInt(e.target.value))
+              } else if ( e.target.checked == false ) {
+                console.log(e.target.value)
+                remove_categ(parseInt(e.target.value))
+              }
+            })
+          });
+        } 
+
+
+      }
+    })
+
+
+
+  }
+
+  const load_preferencias = () => {
+    $.ajax({
+      url: 'https://culturalcompass.online/api/me/saved-categories',
+      type: 'GET',
+      data: {},
+      error: error => {
+        console.log(error.responseText)
+      },
+      success: response => {
+        console.log(response) 
+        response.forEach( categ => {
+          mis_categorias.push(categ.id);
+        })
+      }
+    })  
+  }
+
 
   const load_perfil = () => {
 
-    // traer los eventos a los que esta apuntado el usuario
     $.ajax({
       url: 'https://culturalcompass.online/api/me/user',
       type: 'GET',
@@ -215,7 +218,7 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(error.responseText)
       },
       success: response => {
-        console.log(response)
+        // console.log(response)
         let html = '';
 
         let form_custom = document.querySelector('#form_custom');
@@ -226,130 +229,19 @@ window.addEventListener('DOMContentLoaded', () => {
         form_custom.querySelector('#email').value = response.email
 
         setSelectStatus(form_custom.querySelector('#isActive'), response.isActive ? "true" : "false")
-        form_custom.querySelector('#roleId').value = setRole(response.roleId)
+
+        if ( response.roleId == 3 ) {
+          setSelectRole(form_custom.querySelector('#roleId'), response.roleId);
+        } else {
+          form_custom.querySelector('#roleId').value = setRole(response.roleId);
+        }
 
         form_custom.querySelector('#createdAt').value = response.createdAt.slice(0,16)
-
-        console.log(form_custom.querySelector('button'))
-
-        // initBtnEditar();
-        // initBtnEliminar();
 
       }
     })  
   }
-
-  load_perfil();
-
-
-
-  let initBtnCrear = () => {
-    let btn_crear = document.querySelector('.btn_crear')
-    btn_crear.addEventListener('click', e => {
-      document.querySelector('#modal_custom_title').innerHTML = "Crear Categoria";
-
-      let form_custom = document.querySelector('#form_custom');
-      form_custom.querySelector('button').innerHTML = "Crear Categoria";
-      form_custom.querySelector('button').setAttribute('data-action', 'create')
-
-      console.log(form_custom.querySelector('button'))
-
-    })
-  }
-
-  let initBtnEditar = () => {
-    let allBtnEdit = document.querySelectorAll('.btn_editar')
-    allBtnEdit?.forEach( btn => {
-      btn.addEventListener('click', e => {
-        let categoryId = e.currentTarget.getAttribute('data-id')
-        let row = document.querySelector(`[data-categoryId="${categoryId}"]`).children;
-
-        // console.log(categoryId)
-        // console.log(row[1].innerText.replace(/\s+/g, " "))
-
-        document.querySelector('#modal_custom_title').innerHTML = "Editar Categoria";
-        let form_custom = document.querySelector('#form_custom');
-        form_custom.querySelector('button').innerHTML = "Guardar Cambios";
-        form_custom.querySelector('button').setAttribute('data-action', 'update')
-        form_custom.querySelector('button').setAttribute('data-id', categoryId)
-        form_custom.querySelector('#name').value = row[1].innerText.replace(/\s+/g, " ")
-
-        console.log(form_custom.querySelector('button'))
-
-
-
-      })
-    })
-
-  }
-
-
-  let initBtnEliminar = () => {
-    let allBtnDelete = document.querySelectorAll('.btn_eliminar')
-    allBtnDelete?.forEach( btn => {
-      btn.addEventListener('click', e => {
-        let categoryId = e.currentTarget.getAttribute('data-id')
-        let row = document.querySelector(`[data-categoryId="${categoryId}"]`).children;
-
-        // console.log(row[0].innerText.replace(/\s+/g, " "))
-
-        let form_delete = document.querySelector('#form_delete');
-        form_delete.querySelector('button').innerHTML = "Eliminar Categoria";
-        form_delete.querySelector('button').setAttribute('data-action', 'delete')
-        form_delete.querySelector('button').setAttribute('data-id', categoryId)
-        form_delete.querySelector('#name').value = row[1].innerText.replace(/\s+/g, " ")
-
-        // console.log(form_delete.querySelector('button'))
-
-      })
-    })
-
-  }
-
-
-  let form_delete = document.querySelector('#form_delete');
-  let btn_delete = form_delete.querySelector('button');
-
-  form_delete.addEventListener('submit', (e) => {
-
-    e.preventDefault();
-
-    let endpoint = '';
-    let req_method = '';
-
-    if (  btn_delete.getAttribute('data-action') == 'delete' && btn_delete.getAttribute('data-id') ) {
-      let cat_id = btn_delete.getAttribute('data-id');
-      endpoint = `https://culturalcompass.online/api/categories/${cat_id}`
-      req_method = 'DELETE';
-    }
-
-
-    $.ajax({
-      url: endpoint,
-      type: req_method,
-      data: {},
-      error: error => {
-        console.log(error.responseText)
-      },
-      success: response => {
-        console.log(response);
-        $.notify('Eliminado  ', "success");  
-        // $("#myModal").modal('hide');
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-
-
-      }
-    })
-
-    btn_delete.disabled = true;
-      setTimeout(() => {
-        btn_delete.disabled = false;
-      }, 3000);
-  })
-
-
+  
 
 
   let form = document.querySelector('#form_custom');
@@ -377,10 +269,7 @@ window.addEventListener('DOMContentLoaded', () => {
       },
       success: response => {
         console.log(response);   
-        // $.notify('Eliminado  ', "success");  
-        $("#modal_custom").modal('hide');
         $("#modal_success").modal('show');
-        // window.location.reload();
         load_perfil();
       }
     })
@@ -392,12 +281,46 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 
 
-})
+  const btn_save = document.querySelector('#btn_save')
+  btn_save.addEventListener('click', () => {
+    $("#modal_success").modal('show');
+    load_categories();
+  })
+
+  const add_categ = (categ_id) => {
+    $.ajax({
+      url: 'https://culturalcompass.online/api/users/me/saved-categories',
+      type: 'POST',
+      data: JSON.stringify( { "categoryId" : categ_id, } ),
+      error: error => {
+        console.log(error.responseText)
+      },
+      success: response => {
+        console.log(response);   
+      }
+    }) 
+  }
 
 
+  const remove_categ = (categ_id) => {
+    $.ajax({
+      url: 'https://culturalcompass.online/api/users/me/saved-categories/'+categ_id,
+      type: 'DELETE',
+      data: {},
+      error: error => {
+        console.log(error.responseText)
+      },
+      success: response => {
+        console.log(response);   
+      }
+    }) 
+  }
+
+
+
+btnLogout();
 </script>
 <?php else : ?>
-
   <?php header('location: login.php'); ?>
 <?php endif; ?>
 

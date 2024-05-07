@@ -1,10 +1,8 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
-<?php if ( !usuarioLoggedIn() ) : ?>
-  <?php header('location: login.php'); ?>
-<?php else : ?>
+<?php if ( usuarioLoggedIn() ) : ?>
 
 <main class="container-fluid " style="padding: 0; ">
 
@@ -46,23 +44,8 @@
 </main>
 
 
-<input type="hidden" id="accessToken" value="<?php echo $_SESSION['accessToken'] ?>">
-
-<script src="./assets/js/helper.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-
-  let userId = "<?php echo $_SESSION['userId'] ?>"
-  let token = "<?php echo $_SESSION['accessToken'] ?>"
-
-  let custom_headers = {
-    "Accept":         "application/json, text/javascript, */*; q=0.01", // dataType
-    "Content-Type":   "application/json; charset=UTF-8", // contentType
-    "Authorization":  "Bearer "+token
-  };
-  
-  $.ajaxSetup({ headers: custom_headers });
-
 
   let mis_eventos = [];
 
@@ -212,10 +195,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-})
+}) // end DOMContentLoaded
+
+btnLogout();
 
 
 </script>
+
+<?php else : ?>
+  <?php header('location: login.php'); ?>
 <?php endif; ?>
 
 <?php require_once 'partials/footer.php'; ?>

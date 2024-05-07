@@ -19,14 +19,12 @@
             </li>
 
             <li class="nav-item">
-              <form method="post" action="#" >
-                <button type="submit" name="logout" class="btn btn-danger fs-5">  Salir </button>
-              </form>
+              <button class="btn_logout btn btn-danger fs-5">  Salir </button>
             </li>
 
           <?php elseif ( organizadorLoggedIn() ) : ?>
             <li class="nav-item">
-              <a href="PerfilPersonal.php" class="nav-link"  aria-current="page">Gestionar Mi Perfil</a>
+              <a href="perfil.php" class="nav-link"  aria-current="page">Gestionar Mi Perfil</a>
             </li>
 
             <li class="nav-item dropdown">
@@ -47,9 +45,7 @@
             </li>
 
             <li class="nav-item">
-              <form method="post" action="#" >
-                <button type="submit" name="logout" class="btn btn-danger fs-5">  Salir </button>
-              </form>
+              <button class="btn_logout btn btn-danger fs-5">  Salir </button>
             </li>
 
 
@@ -87,9 +83,7 @@
             </li>
 
             <li class="nav-item">
-              <form method="post" action="#" >
-                <button type="submit" name="logout" class="btn btn-danger fs-5">  Salir </button>
-              </form>
+              <button class="btn_logout btn btn-danger fs-5">  Salir </button>
             </li>
 
           <?php endif; ?>

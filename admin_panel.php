@@ -1,10 +1,8 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
-<?php if ( !adminLoggedIn() ) : ?>
-  <?php header('location: login.php'); ?>
-<?php else : ?>
+<?php if ( adminLoggedIn() ) : ?>
 
 <main class="container-fluid " style="padding: 0; ">
 
@@ -21,14 +19,10 @@
 
 </main>
 
-<input type="hidden" id="accessToken" value="<?php echo $_SESSION['accessToken'] ?>">
-
-<script src="./assets/js/helper.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {
 
   let mis_eventos = [];
-
 
   $.ajax({
     url: 'https://culturalcompass.online/api/events',
@@ -76,7 +70,11 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 
 
+btnLogout();
 </script>
+<?php else : ?>
+
+  <?php header('location: login.php'); ?>
 <?php endif; ?>
 
 <?php require_once 'partials/footer.php'; ?>

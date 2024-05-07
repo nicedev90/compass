@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -87,102 +87,89 @@
   </div>
 </main>
 
+<?php require_once 'partials/modal_success.php'; ?>
 
-
-<script src="./assets/js/helper.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {
 
-  let userId = "<?php echo $_SESSION['userId'] ?>"
-  let token = "<?php echo $_SESSION['accessToken'] ?>"
+  load_categories();
+  load_organizers();
+  load_locations();
 
-  // equivalencia de headers ( que envia el cliente ) usando Axios  usando .ajaxSetup
-  // let custom_headers = {
-  //   "Accept":         "application/json, text/javascript, */*; q=0.01",
-  //   "Content-Type":   "application/json; charset=UTF-8" || "application/x-www-form-urlencoded; charset=UTF-8",
-  //   "Authorization":  "Bearer "+token
-  // };
+})  // end DOMContentLoaded
 
-// si content-type = json ( payload: Request Payload )
-// si content-type = form-urlencoded  ( payload: Form Data )
+  const load_organizers = () => {
+    $.ajax({
+      url: 'https://culturalcompass.online/api/organizers',
+      type: 'GET',
+      data: {},
+      error: error => {
+        console.log(error.responseText)
+      },
+      success: response => {
+        console.log(response)
+        let html = '<option value="">Seleccionar...</option>';
 
+        response.forEach( org => {
+          html += `
+            <option value="${org.id}">${org.name}</option>;
+          `
 
-  let custom_headers = {
-    "Accept":         "application/json, text/javascript, */*; q=0.01", // dataType
-    "Content-Type":   "application/json; charset=UTF-8", // contentType
-    "Authorization":  "Bearer "+token
-  };
-  
+          document.querySelector('#organizerId').innerHTML = html;
+        })
 
-  $.ajaxSetup({ headers: custom_headers });
+      }
+    })
+  }
 
+  const load_locations = () => {
+    $.ajax({
+      url: 'https://culturalcompass.online/api/locations',
+      type: 'GET',
+      data: {},
+      error: error => {
+        console.log(error.responseText)
+      },
+      success: response => {
+        console.log(response)
+        let html = '<option value="">Seleccionar...</option>';
 
+        response.forEach( location => {
+          html += `
+            <option value="${location.id}">${location.name}</option>;
+          `
 
-  $.ajax({
-    url: 'https://culturalcompass.online/api/organizers',
-    type: 'GET',
-    data: {},
-    error: error => {
-      console.log(error.responseText)
-    },
-    success: response => {
-      console.log(response)
-      let html = '<option value="">Seleccionar...</option>';
+          document.querySelector('#locationId').innerHTML = html;
+        })
 
-      response.forEach( org => {
-        html += `
-          <option value="${org.id}">${org.name}</option>;
-        `
+      }
+    })
+  }
 
-        document.querySelector('#organizerId').innerHTML = html;
-      })
+  const load_categories = () => {
+    $.ajax({
+      url: 'https://culturalcompass.online/api/categories',
+      type: 'GET',
+      data: {},
+      error: error => {
+        console.log(error.responseText)
+      },
+      success: response => {
+        console.log(response)
+        let html = '<option value="">Seleccionar...</option>';
 
-    }
-  })
+        response.forEach( category => {
+          html += `
+            <option value="${category.id}">${category.name}</option>;
+          `
 
-  $.ajax({
-    url: 'https://culturalcompass.online/api/locations',
-    type: 'GET',
-    data: {},
-    error: error => {
-      console.log(error.responseText)
-    },
-    success: response => {
-      console.log(response)
-      let html = '<option value="">Seleccionar...</option>';
+          document.querySelector('#categoryId').innerHTML = html;
+        })
 
-      response.forEach( location => {
-        html += `
-          <option value="${location.id}">${location.name}</option>;
-        `
+      }
+    })
+  }
 
-        document.querySelector('#locationId').innerHTML = html;
-      })
-
-    }
-  })
-
-  $.ajax({
-    url: 'https://culturalcompass.online/api/categories',
-    type: 'GET',
-    data: {},
-    error: error => {
-      console.log(error.responseText)
-    },
-    success: response => {
-      console.log(response)
-      let html = '<option value="">Seleccionar...</option>';
-
-      response.forEach( category => {
-        html += `
-          <option value="${category.id}">${category.name}</option>;
-        `
-
-        document.querySelector('#categoryId').innerHTML = html;
-      })
-
-    }
-  })
 
 
   let imageUrl = '';
@@ -193,7 +180,7 @@ window.addEventListener('DOMContentLoaded', () => {
     let reader = new FileReader();
 
     reader.onload = function () {
-      console.log(reader.result);
+      // console.log(reader.result);
       imageUrl = reader.result;
     };
     reader.onerror = function (error) {
@@ -204,15 +191,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
   })
 
-
-
   let form = document.querySelector('#formularioEvento');
   let btn = form.querySelector('button');
 
   form.addEventListener('submit', (e) => {
-
     e.preventDefault();
-
 
     let formData = {
       "name" : document.querySelector('#name').value,
@@ -227,21 +210,7 @@ window.addEventListener('DOMContentLoaded', () => {
       "imageUrl" : imageUrl
     }
 
-    // cesar1  1112222
-    // cesar2  222222
-    // cesar3  222222
-
-    // let formData_string = JSON.stringify(formData)
-
-    // console.log(formData)
-    // console.log( 'Category Id type = ' + typeof formData.categoryId)
-    // console.log( 'Location Id type = ' + typeof formData.locationId)
-    // console.log( 'Organizador Id type = ' + typeof formData.organizerId)
-
-    console.log( 'imageUrl Data type = ' + typeof imageUrl)
-
-    // console.log( 'JSON.stringify(formData) type = ' + typeof formData_string)
-    // console.log( 'Jquery version = 3.7.1')
+    // console.log( 'imageUrl Data type = ' + typeof imageUrl)
 
     $.ajax({
       url:  "https://culturalcompass.online/api/events",
@@ -255,6 +224,8 @@ window.addEventListener('DOMContentLoaded', () => {
       },
       success: response => {
         console.log(response)
+        form.reset();
+        $("#modal_success").modal('show');
        
       }
     })
@@ -267,12 +238,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 
 
-
-
-
-})
-
-
+btnLogout();
 </script>
 
 <?php else : ?>

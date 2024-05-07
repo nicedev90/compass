@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -37,6 +37,7 @@
 </main>
 
 <script>
+window.addEventListener('DOMContentLoaded', () => {
   let form = document.querySelector('#formlogin');
   let btn = form.querySelector('button');
 
@@ -46,34 +47,33 @@
     let formData = {
       "username" : document.querySelector('#username').value,
       "password" : document.querySelector('#password').value
-    }
+    };
 
-    // cesar2  222222
     $.ajax({
       url: 'https://culturalcompass.online/api/auth/login',
       type: 'POST',
-      dataType: 'json',
-      data: formData,
-      // async: false,
+      data: JSON.stringify(formData),
       error: error => {
         console.log(error.responseText)
       },
       success: response => {
         console.log(response)
-
-        let roleId = response.roleId;
+        response['action'] = "login";
 
         $.ajax({
-          url: './controller/session.php',
+          url: './helpers/session.php',
           type: 'POST',
-          dataType: 'json',
-          data: response,
+          data: JSON.stringify(response),
           error: error => {
             console.log(error.responseText)
           },
           success: session => {
-            // console.log(response)
-            switch (roleId) {
+            // console.log(session)
+            
+            localStorage.setItem('accessToken', response.accessToken)
+            localStorage.setItem('userId', response.roleId)
+
+            switch (response.roleId) {
               case 1:
                 window.location.href = 'usuario_panel.php';
                 break;
@@ -96,7 +96,7 @@
         btn.disabled = false;
       }, 3000);
   })
-
+}) // end DOMContentLoaded
 </script>
 
 <?php require_once 'partials/footer.php'; ?>

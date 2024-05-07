@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -41,12 +41,11 @@
 </main>
 
 <script>
-
+window.addEventListener('DOMContentLoaded', () => {
   let form = document.querySelector('#registroForm');
   let btn = form.querySelector('button');
 
   form.addEventListener('submit', (e) => {
-
     e.preventDefault();
 
     let formData = {
@@ -55,15 +54,10 @@
       "password" : document.querySelector('#password').value
     }
 
-    // cesar1  1112222
-    // cesar2  222222
-    // cesar3  222222
-
     $.ajax({
       url: 'https://culturalcompass.online/api/auth/register',
       type: 'POST',
-      dataType: 'json',
-      data: formData,
+      data: JSON.stringify(formData),
       error: error => {
         console.log(error.responseText)
       },
@@ -79,7 +73,7 @@
         btn.disabled = false;
       }, 3000);
   })
-
+}) // end DOMContentLoaded
 </script>
 
 <?php require_once 'partials/footer.php'; ?>

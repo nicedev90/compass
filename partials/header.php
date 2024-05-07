@@ -11,7 +11,9 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"></script>
+    <script src="./assets/js/helpers.js"></script>
+
     <?php if ( isIndexPage($_SERVER['SCRIPT_NAME']) ) : ?>
       <script src="./assets/js/google_maps.js" ></script>
       <script src="https://cdn.rawgit.com/googlemaps/v3-utility-library/master/markerwithlabel/src/markerwithlabel.js"></script>
@@ -31,10 +33,10 @@
       <script src="./assets/js/PanelAdmin.js" defer></script>
 
     <?php elseif ( adminLoggedIn() ) : ?>
-      <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<!--       <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
       <script src='https://cdn.jsdelivr.net/npm/rrule@2.6.4/dist/es5/rrule.min.js'></script>
-      <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.10/index.global.min.js'></script> 
-      <script src="./assets/js/PanelAdmin.js" defer></script>
+      <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.10/index.global.min.js'></script>  -->
+      <!-- <script src="./assets/js/PanelAdmin.js" defer></script> -->
 
     <?php endif ?>
 

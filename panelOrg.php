@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -37,22 +37,22 @@
 
 
 
-<script src="./assets/js/helper.js"></script>
 <script>
-window.addEventListener('DOMContentLoaded', () => {
 
+ window.addEventListener('DOMContentLoaded', () => {
 
-  let userId = "<?php echo $_SESSION['userId'] ?>"
-  let token = "<?php echo $_SESSION['accessToken'] ?>"
+  // load_perfil();
 
-  $.ajaxSetup({ headers: { 'Authorization': 'Bearer '+token } });
+}) // end DOMContentLoaded
+
+  let userId = localStorage.getItem('userId');
+
 
   let mis_eventos = [];
 
   $.ajax({
     url: 'https://culturalcompass.online/api/events',
     type: 'GET',
-    dataType: 'json',
     data: {},
     error: error => {
       console.log(error.responseText)
@@ -105,7 +105,6 @@ window.addEventListener('DOMContentLoaded', () => {
   $.ajax({
     url: 'https://culturalcompass.online/api/events',
     type: 'GET',
-    dataType: 'json',
     data: {},
     error: error => {
       console.log(error.responseText)
@@ -148,10 +147,9 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-console.log(mis_eventos)
-})
 
 
+btnLogout();
 </script>
 <?php endif; ?>
 

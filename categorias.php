@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -8,8 +8,6 @@
 
   <div class="col section__panel" >
     <div class="p-2 col col-md-6 mx-auto bg-white rounded-3 shadow-sm">
-
-
       <?php
       // echo "<pre>";
       // print_r($_SESSION);
@@ -17,8 +15,7 @@
       ?>
 
       <div class="col p-3">
-          <a href="<?php setIndexPage() ?>" class="btn btn-primary p-2">Ir Atrás</a>
-        
+        <a href="<?php setIndexPage() ?>" class="btn btn-primary p-2">Ir Atrás</a>
         <h2 class="text-center">Lista Categorias</h2>
       </div>
 
@@ -31,38 +28,31 @@
     </div>
   </div>
 
-
-
 </main>
 
-
-<input type="hidden" id="accessToken" value="<?php echo $_SESSION['accessToken'] ?>">
 
 <div class="modal fade mt-5" id="modal_custom" tabindex="-1">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-body">
 
-        <div class="row justify-content-between align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-10">
-            <h4 id="modal_custom_title" class="m-0"> </h4>
-          </div>
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
+        <form id="form_custom" action="#"  method="POST" >
 
-
-        <!-- <form action="" class="pt-4 col-md-12 needs-validation" novalidate method="POST" > -->
-        <form id="form_custom" action="#" class="pt-4 " method="POST" >
+          <div class="mb-4 row justify-content-between align-items-center">
+            <div class="col-auto">
+              <h4 id="modal_title" class="m-0"> </h4>
+            </div>
+            <div class="col-auto">
+              <div class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </div>  
+            </div>
+          </div>
 
           <div class="form-floating mb-2" >
             <input type="text" class="form-control bg-light" id="name" name="name" placeholder="Categoria" required autocomplete="off">
             <label for="name">Categoria</label>
           </div>
 
-          <button type="submit" class="mt-3 p-3 w-100 btn btn-primary" > </button>
+          <button type="submit" class="mt-3 p-3 w-100 btn btn-primary " > </button>
 
         </form>
 
@@ -73,86 +63,19 @@
 </div>
 
 
-<div class="modal fade mt-5" id="modal_success" tabindex="-1">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-body">
+<?php require_once 'partials/modal_success.php'; ?>
 
-        <div class="row justify-content-end align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
-
-        <div class=" row text-center py-4">
-          <h1 class="text-success py-3">Correcto</h1>
-          <i class="fas fa-check fa-5x text-success"></i>
-        </div>
-
-
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade mt-5" id="modal_delete" tabindex="-1">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-body">
-
-        <div class="row justify-content-between align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-10">
-            <h4 class="m-0"> Eliminar Categoria ? </h4>
-          </div>
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
-
-
-        <!-- <form action="" class="pt-4 col-md-12 needs-validation" novalidate method="POST" > -->
-        <form id="form_delete" action="#" class="pt-4 " method="POST" >
-
-          <div class="form-floating mb-2" >
-            <input type="text" class="form-control bg-light" id="name" name="name" placeholder="Categoria" required autocomplete="off">
-            <label for="name">Categoria</label>
-          </div>
-
-          <button type="submit" class="mt-3 p-3 w-100 btn btn-danger" > </button>
-
-        </form>
-
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-<script src="./assets/js/helper.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {
 
-  let userId = "<?php echo $_SESSION['userId'] ?>"
-  let token = "<?php echo $_SESSION['accessToken'] ?>"
+  // let userId = localStorage.getItem('userId');
+  load_categories();
 
-  let custom_headers = {
-    "Accept":         "application/json, text/javascript, */*; q=0.01", // dataType
-    "Content-Type":   "application/json; charset=UTF-8", // contentType
-    "Authorization":  "Bearer "+token
-  };
-  
-
-  $.ajaxSetup({ headers: custom_headers });
+}) // end DOMContentLoaded
 
   const load_categories = () => {
     let categorias_total = [];
 
-    // traer los eventos a los que esta apuntado el usuario
     $.ajax({
       url: 'https://culturalcompass.online/api/categories',
       type: 'GET',
@@ -161,7 +84,7 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(error.responseText)
       },
       success: response => {
-        console.log(response)
+        // console.log(response)
         let html = '';
 
         if ( response.length > 0 ) {
@@ -181,16 +104,16 @@ window.addEventListener('DOMContentLoaded', () => {
           response.sort(function (a, b) { return a.id - b.id }); 
           response.forEach( evento => {
             html += `
-              <tr data-categoryId="${evento.id}">
-                <td> ${evento.id}</td>
-                <td> ${evento.name}</td>
+              <tr>
+                <td> ${categ.id}</td>
+                <td> ${categ.name}</td>
                 <td>
-                 <button class=" btn_editar btn btn-primary "  data-bs-toggle="modal" data-bs-target="#modal_custom" data-id="${evento.id}"> <i class="fas fa-edit"></i> editar </button> 
-                  <button class=" btn_eliminar btn btn-danger "  data-bs-toggle="modal" data-bs-target="#modal_delete" data-id="${evento.id}"> <i class="fas fa-trash"></i> Eliminar </button> 
+                  <button class=" btn_editar btn btn-primary "  data-bs-toggle="modal" data-bs-target="#modal_custom" data-category="${categ.id},${categ.name}"> <i class="fas fa-edit"></i> Editar </button> 
+                  <button class=" btn_eliminar btn btn-danger "  data-bs-toggle="modal" data-bs-target="#modal_custom" data-category="${categ.id},${categ.name}"> <i class="fas fa-trash"></i> Eliminar </button> 
                 </td>
               </tr>`;
 
-              categorias_total.push(evento.name);
+              categorias_total.push(categ.name);
           })
 
           html += `
@@ -203,7 +126,6 @@ window.addEventListener('DOMContentLoaded', () => {
           initBtnEditar();
           initBtnEliminar();
 
-
         } else {
           html = '<h3>No hay categorias creadas.</h3>';
           document.querySelector('#tabla_categorias').innerHTML = html;
@@ -213,20 +135,31 @@ window.addEventListener('DOMContentLoaded', () => {
     })  
   }
 
-  load_categories();
-
 
 
   let initBtnCrear = () => {
     let btn_crear = document.querySelector('.btn_crear')
     btn_crear.addEventListener('click', e => {
-      document.querySelector('#modal_custom_title').innerHTML = "Crear Categoria";
 
       let form_custom = document.querySelector('#form_custom');
-      form_custom.querySelector('button').innerHTML = "Crear Categoria";
-      form_custom.querySelector('button').setAttribute('data-action', 'create')
+      form_custom.querySelector('#modal_title').innerHTML = "Crear Categoria";
+      form_custom.reset();
 
-      console.log(form_custom.querySelector('button'))
+      form_custom.querySelector('#name').parentElement.classList.remove('hidden')
+
+      form_custom.querySelector('.subtitle')?.remove();
+
+      let btn_form = form_custom.querySelector('button');
+      btn_form.innerHTML = "Crear Categoria";
+      btn_form.setAttribute('data-action', 'create')
+
+      if ( btn_form.classList.contains('btn-danger') ) {
+        btn_form.classList.toggle('btn-danger')
+        btn_form.classList.toggle('btn-primary')
+      }
+
+      form_custom.querySelector('#name').required = true;
+
 
     })
   }
@@ -235,22 +168,18 @@ window.addEventListener('DOMContentLoaded', () => {
     let allBtnEdit = document.querySelectorAll('.btn_editar')
     allBtnEdit?.forEach( btn => {
       btn.addEventListener('click', e => {
-        let categoryId = e.currentTarget.getAttribute('data-id')
-        let row = document.querySelector(`[data-categoryId="${categoryId}"]`).children;
+        let row = e.currentTarget.getAttribute('data-category').split(',')
 
-        // console.log(categoryId)
-        // console.log(row[1].innerText.replace(/\s+/g, " "))
-
-        document.querySelector('#modal_custom_title').innerHTML = "Editar Categoria";
         let form_custom = document.querySelector('#form_custom');
-        form_custom.querySelector('button').innerHTML = "Guardar Cambios";
-        form_custom.querySelector('button').setAttribute('data-action', 'update')
-        form_custom.querySelector('button').setAttribute('data-id', categoryId)
-        form_custom.querySelector('#name').value = row[1].innerText.replace(/\s+/g, " ")
+        form_custom.querySelector('#modal_title').innerHTML = "Editar Categoria";
 
-        console.log(form_custom.querySelector('button'))
+        let btn_form = form_custom.querySelector('button');
+        btn_form.innerHTML = "Guardar Cambios";
+        btn_form.setAttribute('data-action', 'update')
+        btn_form.setAttribute('data-id', row[0])
 
-
+        form_custom.querySelector('#name').value = row[1];
+        form_custom.querySelector('#name').required = true;
 
       })
     })
@@ -262,69 +191,38 @@ window.addEventListener('DOMContentLoaded', () => {
     let allBtnDelete = document.querySelectorAll('.btn_eliminar')
     allBtnDelete?.forEach( btn => {
       btn.addEventListener('click', e => {
-        let categoryId = e.currentTarget.getAttribute('data-id')
-        let row = document.querySelector(`[data-categoryId="${categoryId}"]`).children;
+        let row = e.currentTarget.getAttribute('data-category').split(',')
 
-        // console.log(row[0].innerText.replace(/\s+/g, " "))
+        let form_custom = document.querySelector('#form_custom');
+        form_custom.querySelector('#modal_title').innerHTML = "Eliminar Categoria";
 
-        let form_delete = document.querySelector('#form_delete');
-        form_delete.querySelector('button').innerHTML = "Eliminar Categoria";
-        form_delete.querySelector('button').setAttribute('data-action', 'delete')
-        form_delete.querySelector('button').setAttribute('data-id', categoryId)
-        form_delete.querySelector('#name').value = row[1].innerText.replace(/\s+/g, " ")
+        form_custom.querySelector('#name').required = false;
+        form_custom.querySelector('#name').parentElement.classList.add('hidden')
 
-        // console.log(form_delete.querySelector('button'))
+        form_custom.querySelector('.subtitle')?.remove();
+
+
+        let btn_form = form_custom.querySelector('button');
+        btn_form.innerHTML = "Eliminar";
+        btn_form.setAttribute('data-action', 'delete')
+        btn_form.setAttribute('data-id', row[0])
+
+        if ( btn_form.classList.contains('btn-primary') ) {
+          btn_form.classList.toggle('btn-primary')
+          btn_form.classList.toggle('btn-danger')
+        }
+
+        let subtitle = document.createElement('h2');
+        subtitle.classList.add('subtitle', 'py-2', 'text-center');
+        subtitle.innerHTML = row[1]
+
+        btn_form.before(subtitle);
+
 
       })
     })
 
   }
-
-
-  let form_delete = document.querySelector('#form_delete');
-  let btn_delete = form_delete.querySelector('button');
-
-  form_delete.addEventListener('submit', (e) => {
-
-    e.preventDefault();
-
-    let endpoint = '';
-    let req_method = '';
-
-    if (  btn_delete.getAttribute('data-action') == 'delete' && btn_delete.getAttribute('data-id') ) {
-      let cat_id = btn_delete.getAttribute('data-id');
-      endpoint = `https://culturalcompass.online/api/categories/${cat_id}`
-      req_method = 'DELETE';
-    }
-
-
-    $.ajax({
-      url: endpoint,
-      type: req_method,
-      data: {},
-      error: error => {
-        console.log(error.responseText)
-      },
-      success: response => {
-        console.log(response);
-        $.notify('Eliminado  ', "success");  
-        // $("#myModal").modal('hide');
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-
-
-      }
-    })
-
-    btn_delete.disabled = true;
-      setTimeout(() => {
-        btn_delete.disabled = false;
-      }, 3000);
-  })
-
-
-
 
   let form = document.querySelector('#form_custom');
   let btn = form.querySelector('button');
@@ -337,24 +235,22 @@ window.addEventListener('DOMContentLoaded', () => {
       "name" : form.querySelector('#name').value,
     }
 
-
-    // console.log(form.querySelector('#name').value)
-
-
-    // cesar1  1112222
-    // cesar2  222222
-    // cesar3  222222
+    console.log(formData)
 
     let endpoint = '';
     let req_method = '';
 
-    if ( btn.getAttribute('data-action') == 'create' && !btn.getAttribute('data-id') ) {
+    if ( btn.getAttribute('data-action') == 'create' ) {
       endpoint = 'https://culturalcompass.online/api/categories';
       req_method = 'POST';
     } else if (  btn.getAttribute('data-action') == 'update' && btn.getAttribute('data-id') ) {
       let cat_id = btn.getAttribute('data-id');
       endpoint = `https://culturalcompass.online/api/categories/${cat_id}`
       req_method = 'PATCH';
+    } else if (  btn.getAttribute('data-action') == 'delete' && btn.getAttribute('data-id') ) {
+      let cat_id = btn.getAttribute('data-id');
+      endpoint = `https://culturalcompass.online/api/categories/${cat_id}`
+      req_method = 'DELETE';
     }
 
     $.ajax({
@@ -365,11 +261,9 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(error.responseText)
       },
       success: response => {
-        console.log(response);   
-        // $.notify('Eliminado  ', "success");  
+        // console.log(response);    
         $("#modal_custom").modal('hide');
         $("#modal_success").modal('show');
-        // window.location.reload();
         load_categories();
       }
     })
@@ -381,9 +275,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 
 
-})
-
-
+btnLogout();
 </script>
 <?php else : ?>
 

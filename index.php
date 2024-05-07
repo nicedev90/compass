@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -38,10 +38,8 @@
 
 </main>
 
-<script src="./assets/js/helper.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-
 
   $.ajax({
     url: 'https://culturalcompass.online/api/events',
@@ -78,9 +76,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-
-})
-
-
+}) // end DOMContentLoaded
 </script>
 <?php require_once 'partials/footer.php'; ?>

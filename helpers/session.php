@@ -1,10 +1,5 @@
 <?php
-  require_once 'Controller.php';
 
-  $control = new Controller;
-
-  define('WEB_ROOT', dirname(dirname(__FILE__)));
-  // define('URL_ROOT', 'http://192.168.8.100/yassir/front2');
   define('WEB_NAME', 'Cultural Compass');
   
   if (session_status() == PHP_SESSION_NONE) {
@@ -12,20 +7,10 @@
     session_cache_expire(60);
     session_start();
   }
-
-
-
-  function createdAlert() {
-      if (isset($_SESSION['alerta'])) {
-          echo 'success_modal';
-          unset($_SESSION['alerta']);
-      }
-  }
   
   function isIndexPage($script_name) {
-      $arr = explode('/', $script_name);
-
-      return end($arr) == 'index.php' ? true : false;
+    $arr = explode('/', $script_name);
+    return end($arr) == 'index.php' ? true : false;
   }
 
 
@@ -52,26 +37,6 @@
   }
 
 
-
-  function fixedFecha($date) {
-      setlocale(LC_TIME, "es_AR");
-      $fecha = $date;
-      $fecha = str_replace("/", "-", $fecha); 
-      $fecha = date("d-m-Y", strtotime($fecha));
-      return $fecha;
-  }
-
-  function loginAlert() {
-      if (isset($_GET['err']) && $_GET['err'] == 1) {
-          echo "¡Error! Contraseña incorrecta.";
-      }
-
-      if (isset($_GET['err']) && $_GET['err'] == 2) {
-          echo "¡Error! Usuario no registrado.";
-      }
-  }
-
-
   function usuarioLoggedIn () {
     return !empty($_SESSION['roleId']) && $_SESSION['roleId'] == 1 ? true : false;
   }
@@ -91,16 +56,41 @@
   }
 
 
-
-  if (isset($_POST['logout'])) {
-    $control->logout();
+  function createSession( $user = [] ) {
+    $_SESSION['accessToken'] = $user['accessToken'];
+    $_SESSION['expiresAt'] = $user['expiresAt'];
+    $_SESSION['userId'] = $user['userId'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['roleId'] = $user['roleId'];
+    $_SESSION['roleName'] = $user['roleName'];
   }
 
 
-  if ( $_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['accessToken'])) {
+  function logout() {
+    session_destroy();
+  }
+
+
+
+  if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+
+    $json = json_decode(file_get_contents('php://input'));
+
+    if (is_object($json)) {
+      $data = get_object_vars($json);
+    }
+
+    switch ( $data['action'] ) {
+      case "login":
+        createSession($data);
+        break;
+      case "logout":
+        logout();
+        break;
+    }
+    
     // echo "<pre>";
-    // print_r($_POST);
+    // print_r($data);
     // die();
 
-    $control->createSession($_POST);
   }

@@ -1,4 +1,4 @@
-<?php require_once 'controller/session.php'; ?>
+<?php require_once 'helpers/session.php'; ?>
 <?php require_once 'partials/header.php'; ?>
 <?php require_once 'partials/navbar.php'; ?>
 
@@ -45,11 +45,7 @@
     </div>
   </div>
 
-          
-
-
 </main>
-
 
 
 <div class="modal fade mt-5" id="modal_custom" tabindex="-1">
@@ -57,19 +53,16 @@
     <div class="modal-content">
       <div class="modal-body">
 
-        <div class="row justify-content-between align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-10">
-            <h4 id="modal_custom_title" class="m-0"> </h4>
-          </div>
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
-
-
-        <!-- <form action="" class="pt-4 col-md-12 needs-validation" novalidate method="POST" > -->
         <form id="form_custom" action="#" class="pt-4 " method="POST" >
+
+          <div class="mb-4 row justify-content-between align-items-center">
+            <div class="col-auto">
+              <h4 id="modal_title" class="m-0"> </h4>
+            </div>
+            <div class="col-auto">
+              <div class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </div>  
+            </div>
+          </div>
 
           <div class="form-floating mb-2" >
             <input type="text" class="form-control bg-light" id="username" name="username" placeholder="Username" required autocomplete="off">
@@ -109,81 +102,18 @@
 </div>
 
 
-<div class="modal fade mt-5" id="modal_success" tabindex="-1">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-body">
-
-        <div class="row justify-content-end align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
-
-        <div class=" row text-center py-4">
-          <h1 class="text-success py-3">Correcto</h1>
-          <i class="fas fa-check fa-5x text-success"></i>
-        </div>
+<?php require_once 'partials/modal_success.php'; ?>
 
 
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-<div class="modal fade mt-5" id="modal_delete" tabindex="-1">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-body">
-
-        <div class="row justify-content-between align-items-center">
-          <!-- <div class="col-8 border bg-light  "> -->
-          <div class="col-10">
-            <h4 class="m-0"> Eliminar Usuario ? </h4>
-          </div>
-          <div class="col-2">
-            <button class=" w-100 btn btn-danger " data-bs-dismiss="modal"> <i class="fas fa-xmark"></i> </button>  
-          </div>
-        </div>
-
-
-        <!-- <form action="" class="pt-4 col-md-12 needs-validation" novalidate method="POST" > -->
-        <form id="form_delete" action="#" class="pt-4 " method="POST" >
-
-          <div class="form-floating mb-2" >
-            <input type="text" class="form-control bg-light" id="username" name="username" placeholder="Username" required autocomplete="off">
-            <label for="username">Username</label>
-          </div>
-
-          <button type="submit" class="mt-3 p-3 w-100 btn btn-danger" > </button>
-
-        </form>
-
-      </div>
-
-    </div>
-  </div>
-</div>
-
-
-<script src="./assets/js/helper.js"></script>
 <script>
+
 window.addEventListener('DOMContentLoaded', () => {
 
-  let userId = "<?php echo $_SESSION['userId'] ?>"
-  let token = "<?php echo $_SESSION['accessToken'] ?>"
+  // let userId = localStorage.getItem('userId');
+  load_usuarios();
 
-  let custom_headers = {
-    "Accept":         "application/json, text/javascript, */*; q=0.01", // dataType
-    "Content-Type":   "application/json; charset=UTF-8", // contentType
-    "Authorization":  "Bearer "+token
-  };
-  
+})
 
-  $.ajaxSetup({ headers: custom_headers });
 
   const load_usuarios = () => {
     let usuarios_total = [];
@@ -197,7 +127,7 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(error.responseText)
       },
       success: response => {
-        console.log(response)
+        // console.log(response)
         let html = '';
 
         if ( response.length > 0 ) {
@@ -222,7 +152,7 @@ window.addEventListener('DOMContentLoaded', () => {
           response.sort(function (a, b) { return a.id - b.id }); 
           response.forEach( user => {
             html += `
-              <tr data-userId="${user.id}">
+              <tr>
                 <td> ${user.id}</td>
                 <td> ${user.username}</td>
                 <td> ${user.email}</td>
@@ -230,7 +160,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 <td> ${setRole(user.roleId)}</td>
                 <td> ${setTime(user.createdAt)}</td>
                 <td>
-                 <button class=" btn_editar btn btn-primary "  data-bs-toggle="modal" data-bs-target="#modal_custom" data-id="${user.id}" data-user="${[user.isActive,user.roleId,user.createdAt]}"> <i class="fas fa-edit"></i> editar </button> 
+                 <button class=" btn_editar btn btn-primary "  data-bs-toggle="modal" data-bs-target="#modal_custom" data-user="${[user.id,user.username,user.email,user.isActive,user.roleId,user.createdAt]}"> <i class="fas fa-edit"></i> Editar </button> 
                 </td>
               </tr>`;
 
@@ -244,8 +174,6 @@ window.addEventListener('DOMContentLoaded', () => {
           document.querySelector('#tabla_usuarios').innerHTML = html;
 
           initBtnEditar();
-          initBtnEliminar();
-
 
         } else {
           html = '<h3>No hay Usuarios.</h3>';
@@ -256,113 +184,37 @@ window.addEventListener('DOMContentLoaded', () => {
     })  
   }
 
-  load_usuarios();
-
-
-
-
 
   let initBtnEditar = () => {
     let allBtnEdit = document.querySelectorAll('.btn_editar')
     allBtnEdit?.forEach( btn => {
       btn.addEventListener('click', e => {
-        let userId = e.currentTarget.getAttribute('data-id')
-        let user = e.currentTarget.getAttribute('data-user')
-        let row = document.querySelector(`[data-userId="${userId}"]`).children;
 
-        console.log(typeof user)
-        console.log(user)
+        let row = e.currentTarget.getAttribute('data-user').split(',')
 
-        let data_user = user.split(',')
-        // console.log(row[1].innerText.replace(/\s+/g, " "))
-
-        document.querySelector('#modal_custom_title').innerHTML = "Editar Usuario";
         let form_custom = document.querySelector('#form_custom');
-        form_custom.querySelector('button').innerHTML = "Guardar Cambios";
-        form_custom.querySelector('button').setAttribute('data-action', 'update')
-        form_custom.querySelector('button').setAttribute('data-id', userId)
-        form_custom.querySelector('#username').value = row[1].innerText.replace(/\s+/g, " ")
-        form_custom.querySelector('#email').value = row[2].innerText.replace(/\s+/g, " ")
+        form_custom.querySelector('#modal_title').innerHTML = "Editar Usuario";
 
-        setSelectStatus(form_custom.querySelector('#isActive'), data_user[0])
-        setSelectRole(form_custom.querySelector('#roleId'), data_user[1])
+        let btn_form = form_custom.querySelector('button');
+        btn_form.innerHTML = "Guardar Cambios";
+        btn_form.setAttribute('data-action', 'update')
+        btn_form.setAttribute('data-id', row[0])
 
-        form_custom.querySelector('#createdAt').value = data_user[2].slice(0,16)
 
-        console.log(form_custom.querySelector('button'))
+        // form_custom.querySelector('#username').value = row[1].innerText.replace(/\s+/g, " ")
+        form_custom.querySelector('#username').value = row[1]
+        form_custom.querySelector('#email').value = row[2]
+
+        setSelectStatus(form_custom.querySelector('#isActive'), row[3])
+        setSelectRole(form_custom.querySelector('#roleId'), row[4])
+
+        form_custom.querySelector('#createdAt').value = row[5].slice(0,16)
 
 
       })
     })
 
   }
-
-
-  let initBtnEliminar = () => {
-    let allBtnDelete = document.querySelectorAll('.btn_eliminar')
-    allBtnDelete?.forEach( btn => {
-      btn.addEventListener('click', e => {
-        let userId = e.currentTarget.getAttribute('data-id')
-        let row = document.querySelector(`[data-userId="${userId}"]`).children;
-
-        // console.log(row[0].innerText.replace(/\s+/g, " "))
-
-        let form_delete = document.querySelector('#form_delete');
-        form_delete.querySelector('button').innerHTML = "Eliminar Usuario";
-        form_delete.querySelector('button').setAttribute('data-action', 'delete')
-        form_delete.querySelector('button').setAttribute('data-id', userId)
-        form_delete.querySelector('#username').value = row[1].innerText.replace(/\s+/g, " ")
-
-        // console.log(form_delete.querySelector('button'))
-
-      })
-    })
-
-  }
-
-
-  let form_delete = document.querySelector('#form_delete');
-  let btn_delete = form_delete.querySelector('button');
-
-  form_delete.addEventListener('submit', (e) => {
-
-    e.preventDefault();
-
-    let endpoint = '';
-    let req_method = '';
-
-    if (  btn_delete.getAttribute('data-action') == 'delete' && btn_delete.getAttribute('data-id') ) {
-      let user_id = btn_delete.getAttribute('data-id');
-      endpoint = `https://culturalcompass.online/api/users/${user_id}`
-      req_method = 'DELETE';
-    }
-
-
-    $.ajax({
-      url: endpoint,
-      type: req_method,
-      data: {},
-      error: error => {
-        console.log(error.responseText)
-      },
-      success: response => {
-        console.log(response);
-        $.notify('Eliminado  ', "success");  
-        // $("#myModal").modal('hide');
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-
-
-      }
-    })
-
-    btn_delete.disabled = true;
-      setTimeout(() => {
-        btn_delete.disabled = false;
-      }, 3000);
-  })
-
 
 
 
@@ -380,18 +232,12 @@ window.addEventListener('DOMContentLoaded', () => {
       "roleId" : parseInt(form.querySelector('#roleId').value),
     }
 
-
     console.log(formData)
-
-
-    // cesar1  1112222
-    // cesar2  222222
-    // cesar3  222222
 
     let endpoint = '';
     let req_method = '';
 
-    if ( btn.getAttribute('data-action') == 'create' && !btn.getAttribute('data-id') ) {
+    if ( btn.getAttribute('data-action') == 'create' ) {
       endpoint = 'https://culturalcompass.online/api/users';
       req_method = 'POST';
     } else if (  btn.getAttribute('data-action') == 'update' && btn.getAttribute('data-id') ) {
@@ -408,11 +254,9 @@ window.addEventListener('DOMContentLoaded', () => {
         console.log(error.responseText)
       },
       success: response => {
-        console.log(response);   
-        // $.notify('Eliminado  ', "success");  
+        // console.log(response);   
         $("#modal_custom").modal('hide');
         $("#modal_success").modal('show');
-        // window.location.reload();
         load_usuarios();
       }
     })
@@ -423,8 +267,6 @@ window.addEventListener('DOMContentLoaded', () => {
       }, 3000);
   })
 
-
-})
 
 
 </script>
