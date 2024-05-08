@@ -172,7 +172,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-  let imageUrl = '';
+  let imageBase64 = '';
   
   let input_image = document.querySelector('#imagen')
   input_image.addEventListener('change', (e) => {
@@ -180,8 +180,8 @@ window.addEventListener('DOMContentLoaded', () => {
     let reader = new FileReader();
 
     reader.onload = function () {
-      // console.log(reader.result);
-      imageUrl = reader.result;
+      console.log(reader.result);
+      imageBase64 = reader.result;
     };
     reader.onerror = function (error) {
      console.log('Error: ', error);
@@ -207,10 +207,10 @@ window.addEventListener('DOMContentLoaded', () => {
       "categoryId" : Number(document.querySelector('#categoryId').value),
       "locationId" : Number(document.querySelector('#locationId').value),
       "organizerId" : Number(document.querySelector('#organizerId').value),
-      "imageUrl" : imageUrl
+      "image" : imageBase64
     }
 
-    // console.log( 'imageUrl Data type = ' + typeof imageUrl)
+    console.log( 'imageUrl Data type = ' + typeof imageUrl)
 
     $.ajax({
       url:  "https://culturalcompass.online/api/events",

@@ -54,7 +54,7 @@ window.addEventListener('DOMContentLoaded', () => {
         html += `
         <div class="col p-4" > 
           <div class="card shadow-sm p-2" >
-            <img src="./assets/images/logo.jpg" class=" img-fluid img-thumbnail">
+            <img src="${evento.imageUrl != null ? evento.imageUrl : "./assets/images/logo.jpg"}" class=" img-fluid img-thumbnail" style="height: 250px">
 
             <div class="card-body">
 
