@@ -284,12 +284,15 @@ window.addEventListener('DOMContentLoaded', () => {
   const btn_save = document.querySelector('#btn_save')
   btn_save.addEventListener('click', () => {
     $("#modal_success").modal('show');
-    load_categories();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
   })
 
   const add_categ = (categ_id) => {
     $.ajax({
-      url: 'https://culturalcompass.online/api/users/me/saved-categories',
+      url: 'https://culturalcompass.online/api/me/saved-categories',
       type: 'POST',
       data: JSON.stringify( { "categoryId" : categ_id, } ),
       error: error => {
@@ -304,7 +307,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const remove_categ = (categ_id) => {
     $.ajax({
-      url: 'https://culturalcompass.online/api/users/me/saved-categories/'+categ_id,
+      url: 'https://culturalcompass.online/api/me/saved-categories/'+categ_id,
       type: 'DELETE',
       data: {},
       error: error => {
